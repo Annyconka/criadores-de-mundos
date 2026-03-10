@@ -11,7 +11,7 @@
 body{
 
 margin:0;
-font-family:Segoe UI;
+font-family:Georgia;
 overflow:hidden;
 color:white;
 
@@ -32,27 +32,30 @@ position:relative;
 
 }
 
-/* PERSONAGENS */
+/* TITULO */
+
+.titulo{
+
+position:absolute;
+top:30px;
+left:50%;
+transform:translateX(-50%);
+font-size:40px;
+text-shadow:0 0 15px black;
+
+}
+
+/* PERSONAGEM */
 
 .personagem{
 
 position:absolute;
-bottom:20px;
-width:200px;
+bottom:0;
+left:60px;
+
+width:260px;
 
 animation:entrar 2s ease;
-
-}
-
-#anny{
-
-left:40px;
-
-}
-
-#thomas{
-
-right:40px;
 
 }
 
@@ -61,7 +64,7 @@ right:40px;
 from{
 
 opacity:0;
-transform:translateY(100px);
+transform:translateY(120px);
 
 }
 
@@ -74,71 +77,106 @@ transform:translateY(0);
 
 }
 
+/* CADERNO */
+
+.caderno{
+
+position:absolute;
+bottom:80px;
+left:220px;
+width:150px;
+
+}
+
 /* BALÃO */
 
 .balao{
 
 position:absolute;
-bottom:220px;
-background:rgba(0,0,0,0.6);
-padding:15px;
-border-radius:15px;
-width:200px;
-font-size:15px;
+bottom:280px;
+left:200px;
+
+background:url("img/pergaminho.png");
+background-size:cover;
+
+padding:30px;
+width:260px;
+
+color:#3b2c15;
+
+font-weight:bold;
 
 }
-
-#fala1{left:40px;}
-#fala2{right:40px;}
 
 /* PORTAIS */
 
 .portal{
 
 position:absolute;
-
-background:rgba(0,0,0,0.6);
-border-radius:20px;
-
-padding:15px 25px;
-
+width:140px;
 cursor:pointer;
 
-transition:0.3s;
-
-box-shadow:0 0 15px rgba(255,255,255,0.3);
+transition:0.4s;
 
 }
 
 .portal:hover{
 
-transform:scale(1.1);
-
-box-shadow:0 0 25px #00eaff;
-
-}
-
-/* POSIÇÕES NO MAPA */
-
-#missao{top:20%;left:45%;}
-#lab{top:40%;left:25%;}
-#biblioteca{top:40%;right:25%;}
-#robo{bottom:35%;left:50%;}
-#diario{bottom:20%;left:25%;}
-#ideias{bottom:20%;right:25%;}
-
-.titulo{
-
-position:absolute;
-top:30px;
-left:50%;
-transform:translateX(-50%);
-font-size:36px;
-text-shadow:0 0 10px black;
+transform:scale(1.2);
+filter:drop-shadow(0 0 10px cyan);
 
 }
+
+/* POSIÇÃO DOS PORTAIS */
+
+#p1{top:22%;left:48%;}
+#p2{top:40%;left:24%;}
+#p3{top:40%;right:24%;}
+#p4{bottom:34%;left:50%;}
+#p5{bottom:20%;left:25%;}
+#p6{bottom:20%;right:25%;}
 
 </style>
+
+<script>
+
+function abrirMissao(){
+
+alert("Missão 01 iniciada!")
+
+}
+
+function abrirDiario(){
+
+alert("Abrindo Diário do Criador")
+
+}
+
+function abrirBiblioteca(){
+
+alert("Biblioteca aberta")
+
+}
+
+function abrirLaboratorio(){
+
+alert("Laboratório iniciado")
+
+}
+
+function abrirRobo(){
+
+alert("Arena do robô")
+
+}
+
+function abrirIdeias(){
+
+alert("Sala de ideias")
+
+}
+
+</script>
 
 </head>
 
@@ -146,7 +184,7 @@ text-shadow:0 0 10px black;
 
 <audio autoplay loop>
 
-<source src="audio/musica.mp3" type="audio/mpeg">
+<source src="audio/fantasia.mp3">
 
 </audio>
 
@@ -158,61 +196,36 @@ text-shadow:0 0 10px black;
 
 </div>
 
-<!-- PERSONAGENS -->
+<!-- PERSONAGEM -->
 
-<img src="img/anny.png" class="personagem" id="anny">
+<img src="img/anny.png" class="personagem">
 
-<div class="balao" id="fala1">
+<img src="img/caderno.png" class="caderno">
 
-Olá! Eu sou Anny, criadora de sonhos.
+<div class="balao">
 
-</div>
+Bem-vindo, Criador.  
+Este é o **Caderno do Criador**.  
 
-<img src="img/thomas.png" class="personagem" id="thomas">
+Cada portal no mapa leva a um desafio.  
 
-<div class="balao" id="fala2">
-
-Eu sou Thomas. Escolha um portal para começar!
+Escolha um e comece sua jornada.
 
 </div>
 
 <!-- PORTAIS -->
 
-<div class="portal" id="missao">
+<img src="img/portal.png" id="p1" class="portal" onclick="abrirMissao()">
 
-⚔️ Torre das Missões
+<img src="img/portal.png" id="p2" class="portal" onclick="abrirLaboratorio()">
 
-</div>
+<img src="img/portal.png" id="p3" class="portal" onclick="abrirBiblioteca()">
 
-<div class="portal" id="lab">
+<img src="img/portal.png" id="p4" class="portal" onclick="abrirRobo()">
 
-🧪 Laboratório
+<img src="img/portal.png" id="p5" class="portal" onclick="abrirDiario()">
 
-</div>
-
-<div class="portal" id="biblioteca">
-
-📚 Biblioteca
-
-</div>
-
-<div class="portal" id="robo">
-
-🤖 Arena do Robô
-
-</div>
-
-<div class="portal" id="diario">
-
-📖 Diário
-
-</div>
-
-<div class="portal" id="ideias">
-
-💡 Sala de Ideias
-
-</div>
+<img src="img/portal.png" id="p6" class="portal" onclick="abrirIdeias()">
 
 </div>
 
