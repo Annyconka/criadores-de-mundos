@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Academia de Criadores de Mundos</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+background:linear-gradient(#0f2027,#203a43,#2c5364);
+color:white;
+text-align:center;
+}
+
+header{
+font-size:38px;
+padding:20px;
+}
+
+#nivelBox{
+margin-top:10px;
+font-size:18px;
+}
+
+/* MAPA RPG */
+
+#mapa{
+
+display:grid;
+grid-template-columns:repeat(3,200px);
+gap:30px;
+justify-content:center;
+margin-top:40px;
+
+}
+
+.local{
+
+background:#1b2d3b;
+padding:40px;
+border-radius:20px;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 0 15px rgba(0,0,0,0.5);
+
+}
+
+.local:hover{
+
+transform:scale(1.1);
+background:#324c63;
+
+}
+
+.section{
+
+display:none;
+padding:40px;
+
+}
+
+button{
+
+padding:12px 30px;
+margin:10px;
+border:none;
+border-radius:10px;
+background:#ffd700;
+cursor:pointer;
+font-size:16px;
+
+}
+
+button:hover{
+
+background:#ffb700;
+
+}
+
+textarea{
+
+width:350px;
+height:120px;
+border-radius:10px;
+padding:10px;
+
+}
+
+/* LABIRINTO */
+
+#labirinto{
+
+display:grid;
+grid-template-columns:repeat(6,60px);
+gap:5px;
+margin:auto;
+width:380px;
+
+}
+
+.celula{
+
+width:60px;
+height:60px;
+background:#203a43;
+
+}
+
+.robo{
+
+background:#00ffc8;
+
+}
+
+.objetivo{
+
+background:#ff5c5c;
+
+}
+
+</style>
+
+<script>
+
+/* SISTEMA DE PROGRESSO */
+
+let progresso = JSON.parse(localStorage.getItem("criadoresSonhos")) || {
+
+nivel:1,
+xp:0,
+conquistas:[]
+
+}
+
+function salvar(){
+
+localStorage.setItem("criadoresSonhos",JSON.stringify(progresso))
+
+}
+
+/* NARRADOR */
+
+function narrar(texto){
+
+let fala = new SpeechSynthesisUtterance(texto)
+
+fala.lang="pt-BR"
+
+speechSynthesis.speak(fala)
+
+}
+
+/* NAVEGAÇÃO */
+
+function abrir(secao){
+
+document.getElementById("mapa").style.display="none"
+
+document.querySelectorAll(".section").forEach(s=>s.style.display="none")
+
+document.getElementById(secao).style.display="block"
+
+}
+
+function voltar(){
+
+document.querySelectorAll(".section").forEach(s=>s.style.display="none")
+
+document.getElementById("mapa").style.display="grid"
+
+}
+
+/* QUIZ MISSÃO */
+
+function quiz(resposta){
+
+if(resposta=="certa"){
+
+alert("🎉 Correto!")
+
+ganharXP(10)
+
+desbloquear("Aprendiz de Algoritmos")
+
+}
+
+else{
+
+alert("❌ Tente novamente")
+
+}
+
+}
+
+/* XP E NÍVEL */
+
+function ganharXP(valor){
+
+progresso.xp += valor
+
+if(progresso.xp >= 30){
+
+progresso.nivel++
+
+progresso.xp = 0
+
+alert("🏆 Você subiu de nível!")
+
+}
+
+salvar()
+
+atualizarPainel()
+
+}
+
+/* CONQUISTAS */
+
+function desbloquear(nome){
+
+if(!progresso.conquistas.includes(nome)){
+
+progresso.conquistas.push(nome)
+
+alert("🏆 Nova conquista: "+nome)
+
+salvar()
+
+atualizarPainel()
+
+}
+
+}
+
+function atualizarPainel(){
+
+document.getElementById("nivel").innerText = progresso.nivel
+
+let lista=document.getElementById("listaConquistas")
+
+if(lista){
+
+lista.innerHTML=""
+
+progresso.conquistas.forEach(c=>{
+
+lista.innerHTML+=`<p>🏆 ${c}</p>`
+
+})
+
+}
+
+}
+
+window.onload=atualizarPainel
+
+
+/* JOGO DO ROBÔ */
+
+let pos=0
+
+function mover(){
+
+let celulas=document.querySelectorAll(".celula")
+
+celulas[pos].classList.remove("robo")
+
+pos++
+
+if(pos>=celulas.length) pos=celulas.length-1
+
+celulas[pos].classList.add("robo")
+
+if(celulas[pos].classList.contains("objetivo")){
+
+alert("🎉 Você completou o desafio!")
+
+ganharXP(20)
+
+desbloquear("Mestre do Robô")
+
+}
+
+}
+
+</script>
+
+</head>
+
+
+<body>
+
+<header>
+
+🌌 Academia dos Criadores de Sonhos
+
+<div id="nivelBox">
+
+Nível do Criador: <span id="nivel">1</span>
+
+</div>
+
+</header>
+
+
+<!-- MAPA RPG -->
+
+<div id="mapa">
+
+<div class="local" onclick="abrir('missao'); narrar('Criador, sua primeira missão começou.')">
+⚔️ Missões
+</div>
+
+<div class="local" onclick="abrir('laboratorio')">
+🧪 Laboratório
+</div>
+
+<div class="local" onclick="abrir('biblioteca')">
+📚 Biblioteca
+</div>
+
+<div class="local" onclick="abrir('robo')">
+🤖 Desafio do Robô
+</div>
+
+<div class="local" onclick="abrir('diario')">
+📖 Diário
+</div>
+
+<div class="local" onclick="abrir('ideias')">
+💡 Ideias
+</div>
+
+<div class="local" onclick="abrir('conquistas')">
+🏆 Conquistas
+</div>
+
+</div>
+
+
+<!-- MISSÃO -->
+
+<div id="missao" class="section">
+
+<h2>Missão 1 — O que é Algoritmo?</h2>
+
+<p>Escolha a resposta correta:</p>
+
+<button onclick="quiz('errado')">Um tipo de computador</button>
+
+<button onclick="quiz('certa')">Sequência de passos para resolver um problema</button>
+
+<button onclick="quiz('errado')">Um jogo digital</button>
+
+<br>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+<!-- LABORATÓRIO -->
+
+<div id="laboratorio" class="section">
+
+<h2>Laboratório dos Criadores</h2>
+
+<p>Exemplo de algoritmo:</p>
+
+<p>
+
+1 pegar escova  
+<br>
+2 colocar pasta  
+<br>
+3 escovar  
+<br>
+4 enxaguar
+
+</p>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+<!-- BIBLIOTECA -->
+
+<div id="biblioteca" class="section">
+
+<h2>Biblioteca</h2>
+
+<p>
+
+Pensamento computacional envolve:
+
+</p>
+
+<p>
+
+✔ decomposição  
+<br>
+✔ padrões  
+<br>
+✔ abstração  
+<br>
+✔ algoritmos
+
+</p>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+<!-- JOGO ROBÔ -->
+
+<div id="robo" class="section">
+
+<h2>Desafio do Robô</h2>
+
+<div id="labirinto">
+
+<div class="celula robo"></div>
+<div class="celula"></div>
+<div class="celula"></div>
+<div class="celula"></div>
+<div class="celula"></div>
+<div class="celula objetivo"></div>
+
+<div class="celula"></div>
+<div class="celula"></div>
+<div class="celula"></div>
+<div class="celula"></div>
+<div class="celula"></div>
+<div class="celula"></div>
+
+</div>
+
+<br>
+
+<button onclick="mover()">Mover robô</button>
+
+<br>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+<!-- DIÁRIO -->
+
+<div id="diario" class="section">
+
+<h2>Diário do Criador</h2>
+
+<textarea placeholder="O que você aprendeu hoje?"></textarea>
+
+<br>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+<!-- IDEIAS -->
+
+<div id="ideias" class="section">
+
+<h2>Mural de Ideias</h2>
+
+<textarea placeholder="Compartilhe ideias de jogos ou mundos"></textarea>
+
+<br>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+<!-- CONQUISTAS -->
+
+<div id="conquistas" class="section">
+
+<h2>Conquistas</h2>
+
+<div id="listaConquistas"></div>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+</body>
+
+</html>
