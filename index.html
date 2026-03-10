@@ -4,29 +4,61 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Academia de Criadores de Mundos</title>
+<title>Academia dos Criadores de Sonhos</title>
 
 <style>
 
 body{
+
 margin:0;
 font-family:Segoe UI;
-background:linear-gradient(#0f2027,#203a43,#2c5364);
 color:white;
 text-align:center;
+background:linear-gradient(#0b1d2a,#163b4a,#224b5c);
+
 }
+
+/* TITULO */
 
 header{
+
+padding:30px;
 font-size:38px;
+
+}
+
+/* PERSONAGENS */
+
+.personagens{
+
+display:flex;
+justify-content:center;
+gap:40px;
+margin-top:20px;
+
+}
+
+.personagem{
+
+width:120px;
+}
+
+.personagem img{
+
+width:100%;
+}
+
+.balao{
+
+background:#1b2d3b;
 padding:20px;
-}
-
-#nivelBox{
+border-radius:15px;
 margin-top:10px;
-font-size:18px;
+font-size:16px;
+
 }
 
-/* MAPA RPG */
+/* MAPA */
 
 #mapa{
 
@@ -34,27 +66,28 @@ display:grid;
 grid-template-columns:repeat(3,200px);
 gap:30px;
 justify-content:center;
-margin-top:40px;
+margin-top:60px;
 
 }
 
 .local{
 
 background:#1b2d3b;
-padding:40px;
+padding:30px;
 border-radius:20px;
 cursor:pointer;
 transition:0.3s;
-box-shadow:0 0 15px rgba(0,0,0,0.5);
 
 }
 
 .local:hover{
 
 transform:scale(1.1);
-background:#324c63;
+background:#2d4c61;
 
 }
+
+/* MISSÕES */
 
 .section{
 
@@ -75,50 +108,27 @@ font-size:16px;
 
 }
 
-button:hover{
+/* ANIMAÇÃO RESULTADO */
 
-background:#ffb700;
+.resultado{
 
-}
-
-textarea{
-
-width:350px;
-height:120px;
-border-radius:10px;
-padding:10px;
-
-}
-
-/* LABIRINTO */
-
-#labirinto{
-
-display:grid;
-grid-template-columns:repeat(6,60px);
-gap:5px;
-margin:auto;
-width:380px;
+position:fixed;
+top:40%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#1b2d3b;
+padding:40px;
+border-radius:20px;
+font-size:24px;
+display:none;
+animation:pop 0.4s;
 
 }
 
-.celula{
+@keyframes pop{
 
-width:60px;
-height:60px;
-background:#203a43;
-
-}
-
-.robo{
-
-background:#00ffc8;
-
-}
-
-.objetivo{
-
-background:#ff5c5c;
+from{transform:scale(0.5);opacity:0;}
+to{transform:scale(1);opacity:1;}
 
 }
 
@@ -126,31 +136,15 @@ background:#ff5c5c;
 
 <script>
 
-/* SISTEMA DE PROGRESSO */
-
-let progresso = JSON.parse(localStorage.getItem("criadoresSonhos")) || {
-
-nivel:1,
-xp:0,
-conquistas:[]
-
-}
-
-function salvar(){
-
-localStorage.setItem("criadoresSonhos",JSON.stringify(progresso))
-
-}
-
 /* NARRADOR */
 
-function narrar(texto){
+function falar(texto){
 
-let fala = new SpeechSynthesisUtterance(texto)
+let voz = new SpeechSynthesisUtterance(texto)
 
-fala.lang="pt-BR"
+voz.lang="pt-BR"
 
-speechSynthesis.speak(fala)
+speechSynthesis.speak(voz)
 
 }
 
@@ -174,114 +168,37 @@ document.getElementById("mapa").style.display="grid"
 
 }
 
-/* QUIZ MISSÃO */
+/* QUIZ */
 
-function quiz(resposta){
+function quiz(resp){
 
-if(resposta=="certa"){
+let box=document.getElementById("resultado")
 
-alert("🎉 Correto!")
+box.style.display="block"
 
-ganharXP(10)
+if(resp=="certa"){
 
-desbloquear("Aprendiz de Algoritmos")
+box.innerHTML="🎉 Correto!<br>Você completou a missão!"
+
+setTimeout(()=>{
+
+box.style.display="none"
+
+abrir("robo")
+
+},2000)
 
 }
 
 else{
 
-alert("❌ Tente novamente")
+box.innerHTML="❌ Tente novamente"
 
-}
+setTimeout(()=>{
 
-}
+box.style.display="none"
 
-/* XP E NÍVEL */
-
-function ganharXP(valor){
-
-progresso.xp += valor
-
-if(progresso.xp >= 30){
-
-progresso.nivel++
-
-progresso.xp = 0
-
-alert("🏆 Você subiu de nível!")
-
-}
-
-salvar()
-
-atualizarPainel()
-
-}
-
-/* CONQUISTAS */
-
-function desbloquear(nome){
-
-if(!progresso.conquistas.includes(nome)){
-
-progresso.conquistas.push(nome)
-
-alert("🏆 Nova conquista: "+nome)
-
-salvar()
-
-atualizarPainel()
-
-}
-
-}
-
-function atualizarPainel(){
-
-document.getElementById("nivel").innerText = progresso.nivel
-
-let lista=document.getElementById("listaConquistas")
-
-if(lista){
-
-lista.innerHTML=""
-
-progresso.conquistas.forEach(c=>{
-
-lista.innerHTML+=`<p>🏆 ${c}</p>`
-
-})
-
-}
-
-}
-
-window.onload=atualizarPainel
-
-
-/* JOGO DO ROBÔ */
-
-let pos=0
-
-function mover(){
-
-let celulas=document.querySelectorAll(".celula")
-
-celulas[pos].classList.remove("robo")
-
-pos++
-
-if(pos>=celulas.length) pos=celulas.length-1
-
-celulas[pos].classList.add("robo")
-
-if(celulas[pos].classList.contains("objetivo")){
-
-alert("🎉 Você completou o desafio!")
-
-ganharXP(20)
-
-desbloquear("Mestre do Robô")
+},1500)
 
 }
 
@@ -291,70 +208,105 @@ desbloquear("Mestre do Robô")
 
 </head>
 
-
 <body>
 
 <header>
 
 🌌 Academia dos Criadores de Sonhos
 
-<div id="nivelBox">
+</header>
 
-Nível do Criador: <span id="nivel">1</span>
+<!-- PERSONAGENS -->
+
+<div class="personagens">
+
+<div class="personagem">
+
+<img src="personagem1.png">
+
+<div class="balao">
+
+Olá! Eu sou **Anny**, criadora de sonhos.
 
 </div>
 
-</header>
+</div>
 
+<div class="personagem">
 
-<!-- MAPA RPG -->
+<img src="personagem2.png">
+
+<div class="balao">
+
+E eu sou **Thomas**. Vamos explorar a academia!
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MAPA -->
 
 <div id="mapa">
 
-<div class="local" onclick="abrir('missao'); narrar('Criador, sua primeira missão começou.')">
-⚔️ Missões
+<div class="local" onclick="abrir('missao'); falar('Sua primeira missão começou.')">
+
+⚔️ Torre das Missões
+
 </div>
 
 <div class="local" onclick="abrir('laboratorio')">
+
 🧪 Laboratório
+
 </div>
 
 <div class="local" onclick="abrir('biblioteca')">
+
 📚 Biblioteca
+
 </div>
 
 <div class="local" onclick="abrir('robo')">
-🤖 Desafio do Robô
+
+🤖 Arena do Robô
+
 </div>
 
 <div class="local" onclick="abrir('diario')">
+
 📖 Diário
+
 </div>
 
 <div class="local" onclick="abrir('ideias')">
-💡 Ideias
+
+💡 Sala de Ideias
+
 </div>
 
 <div class="local" onclick="abrir('conquistas')">
-🏆 Conquistas
-</div>
+
+🏆 Hall das Conquistas
 
 </div>
 
+</div>
 
 <!-- MISSÃO -->
 
 <div id="missao" class="section">
 
-<h2>Missão 1 — O que é Algoritmo?</h2>
+<h2>Missão 1</h2>
 
-<p>Escolha a resposta correta:</p>
+<p>O que é um algoritmo?</p>
 
-<button onclick="quiz('errado')">Um tipo de computador</button>
+<button onclick="quiz('errado')">Um computador</button>
 
-<button onclick="quiz('certa')">Sequência de passos para resolver um problema</button>
+<button onclick="quiz('certa')">Sequência de passos</button>
 
-<button onclick="quiz('errado')">Um jogo digital</button>
+<button onclick="quiz('errado')">Um jogo</button>
 
 <br>
 
@@ -362,23 +314,23 @@ Nível do Criador: <span id="nivel">1</span>
 
 </div>
 
-
 <!-- LABORATÓRIO -->
 
 <div id="laboratorio" class="section">
 
-<h2>Laboratório dos Criadores</h2>
-
-<p>Exemplo de algoritmo:</p>
+<h2>Laboratório</h2>
 
 <p>
 
-1 pegar escova  
-<br>
-2 colocar pasta  
-<br>
-3 escovar  
-<br>
+Exemplo de algoritmo:
+
+</p>
+
+<p>
+
+1 pegar escova<br>
+2 colocar pasta<br>
+3 escovar<br>
 4 enxaguar
 
 </p>
@@ -386,7 +338,6 @@ Nível do Criador: <span id="nivel">1</span>
 <button onclick="voltar()">Voltar</button>
 
 </div>
-
 
 <!-- BIBLIOTECA -->
 
@@ -402,13 +353,10 @@ Pensamento computacional envolve:
 
 <p>
 
-✔ decomposição  
-<br>
-✔ padrões  
-<br>
-✔ abstração  
-<br>
-✔ algoritmos
+decomposição<br>
+padrões<br>
+abstração<br>
+algoritmos
 
 </p>
 
@@ -416,41 +364,25 @@ Pensamento computacional envolve:
 
 </div>
 
-
-<!-- JOGO ROBÔ -->
+<!-- ROBÔ -->
 
 <div id="robo" class="section">
 
 <h2>Desafio do Robô</h2>
 
-<div id="labirinto">
+<p>Ajude o robô a chegar ao final criando um algoritmo!</p>
 
-<div class="celula robo"></div>
-<div class="celula"></div>
-<div class="celula"></div>
-<div class="celula"></div>
-<div class="celula"></div>
-<div class="celula objetivo"></div>
+<button onclick="alert('Desafio iniciado!')">
 
-<div class="celula"></div>
-<div class="celula"></div>
-<div class="celula"></div>
-<div class="celula"></div>
-<div class="celula"></div>
-<div class="celula"></div>
+Iniciar desafio
 
-</div>
-
-<br>
-
-<button onclick="mover()">Mover robô</button>
+</button>
 
 <br>
 
 <button onclick="voltar()">Voltar</button>
 
 </div>
-
 
 <!-- DIÁRIO -->
 
@@ -458,14 +390,13 @@ Pensamento computacional envolve:
 
 <h2>Diário do Criador</h2>
 
-<textarea placeholder="O que você aprendeu hoje?"></textarea>
+<textarea placeholder="O que você aprendeu hoje?" style="width:350px;height:120px;"></textarea>
 
 <br>
 
 <button onclick="voltar()">Voltar</button>
 
 </div>
-
 
 <!-- IDEIAS -->
 
@@ -473,7 +404,7 @@ Pensamento computacional envolve:
 
 <h2>Mural de Ideias</h2>
 
-<textarea placeholder="Compartilhe ideias de jogos ou mundos"></textarea>
+<textarea placeholder="Compartilhe sua ideia de jogo" style="width:350px;height:120px;"></textarea>
 
 <br>
 
@@ -481,19 +412,19 @@ Pensamento computacional envolve:
 
 </div>
 
-
 <!-- CONQUISTAS -->
 
 <div id="conquistas" class="section">
 
 <h2>Conquistas</h2>
 
-<div id="listaConquistas"></div>
+<p>🏆 Primeira missão completa</p>
 
 <button onclick="voltar()">Voltar</button>
 
 </div>
 
+<div id="resultado" class="resultado"></div>
 
 </body>
 
