@@ -12,419 +12,209 @@ body{
 
 margin:0;
 font-family:Segoe UI;
+overflow:hidden;
 color:white;
-text-align:center;
-background:linear-gradient(#0b1d2a,#163b4a,#224b5c);
-
-}
-
-/* TITULO */
-
-header{
-
-padding:30px;
-font-size:38px;
-
-}
-
-/* PERSONAGENS */
-
-.personagens{
-
-display:flex;
-justify-content:center;
-gap:40px;
-margin-top:20px;
-
-}
-
-.personagem{
-
-width:120px;
-}
-
-.personagem img{
-
-width:100%;
-}
-
-.balao{
-
-background:#1b2d3b;
-padding:20px;
-border-radius:15px;
-margin-top:10px;
-font-size:16px;
 
 }
 
 /* MAPA */
 
-#mapa{
+.mapa{
 
-display:grid;
-grid-template-columns:repeat(3,200px);
-gap:30px;
-justify-content:center;
-margin-top:60px;
+background-image:url("img/mapa.png");
+background-size:cover;
+background-position:center;
+
+width:100vw;
+height:100vh;
+
+position:relative;
 
 }
 
-.local{
+/* PERSONAGENS */
 
-background:#1b2d3b;
-padding:30px;
+.personagem{
+
+position:absolute;
+bottom:20px;
+width:200px;
+
+animation:entrar 2s ease;
+
+}
+
+#anny{
+
+left:40px;
+
+}
+
+#thomas{
+
+right:40px;
+
+}
+
+@keyframes entrar{
+
+from{
+
+opacity:0;
+transform:translateY(100px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+/* BALÃO */
+
+.balao{
+
+position:absolute;
+bottom:220px;
+background:rgba(0,0,0,0.6);
+padding:15px;
+border-radius:15px;
+width:200px;
+font-size:15px;
+
+}
+
+#fala1{left:40px;}
+#fala2{right:40px;}
+
+/* PORTAIS */
+
+.portal{
+
+position:absolute;
+
+background:rgba(0,0,0,0.6);
 border-radius:20px;
+
+padding:15px 25px;
+
 cursor:pointer;
+
 transition:0.3s;
 
+box-shadow:0 0 15px rgba(255,255,255,0.3);
+
 }
 
-.local:hover{
+.portal:hover{
 
 transform:scale(1.1);
-background:#2d4c61;
+
+box-shadow:0 0 25px #00eaff;
 
 }
 
-/* MISSÕES */
+/* POSIÇÕES NO MAPA */
 
-.section{
+#missao{top:20%;left:45%;}
+#lab{top:40%;left:25%;}
+#biblioteca{top:40%;right:25%;}
+#robo{bottom:35%;left:50%;}
+#diario{bottom:20%;left:25%;}
+#ideias{bottom:20%;right:25%;}
 
-display:none;
-padding:40px;
+.titulo{
 
-}
-
-button{
-
-padding:12px 30px;
-margin:10px;
-border:none;
-border-radius:10px;
-background:#ffd700;
-cursor:pointer;
-font-size:16px;
-
-}
-
-/* ANIMAÇÃO RESULTADO */
-
-.resultado{
-
-position:fixed;
-top:40%;
+position:absolute;
+top:30px;
 left:50%;
-transform:translate(-50%,-50%);
-background:#1b2d3b;
-padding:40px;
-border-radius:20px;
-font-size:24px;
-display:none;
-animation:pop 0.4s;
-
-}
-
-@keyframes pop{
-
-from{transform:scale(0.5);opacity:0;}
-to{transform:scale(1);opacity:1;}
+transform:translateX(-50%);
+font-size:36px;
+text-shadow:0 0 10px black;
 
 }
 
 </style>
 
-<script>
-
-/* NARRADOR */
-
-function falar(texto){
-
-let voz = new SpeechSynthesisUtterance(texto)
-
-voz.lang="pt-BR"
-
-speechSynthesis.speak(voz)
-
-}
-
-/* NAVEGAÇÃO */
-
-function abrir(secao){
-
-document.getElementById("mapa").style.display="none"
-
-document.querySelectorAll(".section").forEach(s=>s.style.display="none")
-
-document.getElementById(secao).style.display="block"
-
-}
-
-function voltar(){
-
-document.querySelectorAll(".section").forEach(s=>s.style.display="none")
-
-document.getElementById("mapa").style.display="grid"
-
-}
-
-/* QUIZ */
-
-function quiz(resp){
-
-let box=document.getElementById("resultado")
-
-box.style.display="block"
-
-if(resp=="certa"){
-
-box.innerHTML="🎉 Correto!<br>Você completou a missão!"
-
-setTimeout(()=>{
-
-box.style.display="none"
-
-abrir("robo")
-
-},2000)
-
-}
-
-else{
-
-box.innerHTML="❌ Tente novamente"
-
-setTimeout(()=>{
-
-box.style.display="none"
-
-},1500)
-
-}
-
-}
-
-</script>
-
 </head>
 
 <body>
 
-<header>
+<audio autoplay loop>
+
+<source src="audio/musica.mp3" type="audio/mpeg">
+
+</audio>
+
+<div class="mapa">
+
+<div class="titulo">
 
 🌌 Academia dos Criadores de Sonhos
 
-</header>
+</div>
 
 <!-- PERSONAGENS -->
 
-<div class="personagens">
+<img src="img/anny.png" class="personagem" id="anny">
 
-<div class="personagem">
+<div class="balao" id="fala1">
 
-<img src="personagem1.png">
-
-<div class="balao">
-
-Olá! Eu sou **Anny**, criadora de sonhos.
+Olá! Eu sou Anny, criadora de sonhos.
 
 </div>
 
-</div>
+<img src="img/thomas.png" class="personagem" id="thomas">
 
-<div class="personagem">
+<div class="balao" id="fala2">
 
-<img src="personagem2.png">
-
-<div class="balao">
-
-E eu sou **Thomas**. Vamos explorar a academia!
+Eu sou Thomas. Escolha um portal para começar!
 
 </div>
 
-</div>
+<!-- PORTAIS -->
 
-</div>
-
-<!-- MAPA -->
-
-<div id="mapa">
-
-<div class="local" onclick="abrir('missao'); falar('Sua primeira missão começou.')">
+<div class="portal" id="missao">
 
 ⚔️ Torre das Missões
 
 </div>
 
-<div class="local" onclick="abrir('laboratorio')">
+<div class="portal" id="lab">
 
 🧪 Laboratório
 
 </div>
 
-<div class="local" onclick="abrir('biblioteca')">
+<div class="portal" id="biblioteca">
 
 📚 Biblioteca
 
 </div>
 
-<div class="local" onclick="abrir('robo')">
+<div class="portal" id="robo">
 
 🤖 Arena do Robô
 
 </div>
 
-<div class="local" onclick="abrir('diario')">
+<div class="portal" id="diario">
 
 📖 Diário
 
 </div>
 
-<div class="local" onclick="abrir('ideias')">
+<div class="portal" id="ideias">
 
 💡 Sala de Ideias
 
 </div>
 
-<div class="local" onclick="abrir('conquistas')">
-
-🏆 Hall das Conquistas
-
 </div>
-
-</div>
-
-<!-- MISSÃO -->
-
-<div id="missao" class="section">
-
-<h2>Missão 1</h2>
-
-<p>O que é um algoritmo?</p>
-
-<button onclick="quiz('errado')">Um computador</button>
-
-<button onclick="quiz('certa')">Sequência de passos</button>
-
-<button onclick="quiz('errado')">Um jogo</button>
-
-<br>
-
-<button onclick="voltar()">Voltar</button>
-
-</div>
-
-<!-- LABORATÓRIO -->
-
-<div id="laboratorio" class="section">
-
-<h2>Laboratório</h2>
-
-<p>
-
-Exemplo de algoritmo:
-
-</p>
-
-<p>
-
-1 pegar escova<br>
-2 colocar pasta<br>
-3 escovar<br>
-4 enxaguar
-
-</p>
-
-<button onclick="voltar()">Voltar</button>
-
-</div>
-
-<!-- BIBLIOTECA -->
-
-<div id="biblioteca" class="section">
-
-<h2>Biblioteca</h2>
-
-<p>
-
-Pensamento computacional envolve:
-
-</p>
-
-<p>
-
-decomposição<br>
-padrões<br>
-abstração<br>
-algoritmos
-
-</p>
-
-<button onclick="voltar()">Voltar</button>
-
-</div>
-
-<!-- ROBÔ -->
-
-<div id="robo" class="section">
-
-<h2>Desafio do Robô</h2>
-
-<p>Ajude o robô a chegar ao final criando um algoritmo!</p>
-
-<button onclick="alert('Desafio iniciado!')">
-
-Iniciar desafio
-
-</button>
-
-<br>
-
-<button onclick="voltar()">Voltar</button>
-
-</div>
-
-<!-- DIÁRIO -->
-
-<div id="diario" class="section">
-
-<h2>Diário do Criador</h2>
-
-<textarea placeholder="O que você aprendeu hoje?" style="width:350px;height:120px;"></textarea>
-
-<br>
-
-<button onclick="voltar()">Voltar</button>
-
-</div>
-
-<!-- IDEIAS -->
-
-<div id="ideias" class="section">
-
-<h2>Mural de Ideias</h2>
-
-<textarea placeholder="Compartilhe sua ideia de jogo" style="width:350px;height:120px;"></textarea>
-
-<br>
-
-<button onclick="voltar()">Voltar</button>
-
-</div>
-
-<!-- CONQUISTAS -->
-
-<div id="conquistas" class="section">
-
-<h2>Conquistas</h2>
-
-<p>🏆 Primeira missão completa</p>
-
-<button onclick="voltar()">Voltar</button>
-
-</div>
-
-<div id="resultado" class="resultado"></div>
 
 </body>
 
